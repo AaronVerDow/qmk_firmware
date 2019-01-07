@@ -4,6 +4,7 @@
 #define BASE 0 // default layer
 #define SYMB 1 // symbols
 #define MDIA 2 // media keys
+#define VIM  3 // vim keys
 
 enum custom_keycodes {
   PLACEHOLDER = SAFE_RANGE, // ensure these codes start after the highest keycode defined in Quantum
@@ -18,11 +19,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * | Del  |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  |  \   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | BkSp |   A  |   S  |   D  |   F  |   G  |                    |   H  |   J  |   K  |   L  |; / L2|'/Cmd |
+ * | BkSp |   A  |   S  |   D  |   F  |   G  |                    |   H  |   J  |   K  |   L  |; / L3|'/ L2 |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |LShift|Z/Ctrl|   X  |   C  |   V  |   B  |                    |   N  |   M  |   ,  |   .  |//Ctrl|RShift|
  * |------+------+------+------+------+------'                    `------+------+------+------+------+------|
- * |Grv/L1|  '"  |AltShf| Left | Right|                                  |  Up  | Down |   [  |   ]  | ~L1  |
+ * |Grv/L1|  '"  |AltShf| Left | Right|                                  |  Up  | Down |   [  |   ]  | LGui |
  * `----------------------------------'                                  `----------------------------------'
  *                                      ,-------------.  ,-------------.
  *                                      | App  | LGui |  | Alt  | ^/Esc|
@@ -43,11 +44,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                       KC_HOME,
                                                              KC_SPC,        KC_BSPC,   KC_END,
         // right hand
-                             KC_6,   KC_7,     KC_8,     KC_9,               KC_0,         KC_MINS,
-                             KC_Y,   KC_U,     KC_I,     KC_O,               KC_P,         KC_BSLS,
-                             KC_H,   KC_J,     KC_K,     KC_L,  LT(MDIA, KC_SCLN),  GUI_T(KC_QUOT),
-                             KC_N,   KC_M,  KC_COMM,   KC_DOT,     CTL_T(KC_SLSH),         KC_RSFT,
-                                    KC_UP,  KC_DOWN,  KC_LBRC,            KC_RBRC,          KC_FN1,
+                             KC_6,   KC_7,     KC_8,     KC_9,               KC_0,           KC_MINS,
+                             KC_Y,   KC_U,     KC_I,     KC_O,               KC_P,           KC_BSLS,
+                             KC_H,   KC_J,     KC_K,     KC_L,   LT(VIM, KC_SCLN), LT(MDIA, KC_QUOT),
+                             KC_N,   KC_M,  KC_COMM,   KC_DOT,     CTL_T(KC_SLSH),           KC_RSFT,
+                                    KC_UP,  KC_DOWN,  KC_LBRC,            KC_RBRC,           KC_LGUI,
           KC_RALT,  CTL_T(KC_ESC),
           KC_PGUP,
           KC_PGDN, KC_TAB, KC_ENT
@@ -100,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      | MsUp |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |MsLeft|MsDown|MsRght|      |                    |      |      |      |      |      | Play |
+ * |      |      |MsLeft|MsDown|MsRght|      |                    |MsLeft|MsDown| MsUp |MsRght|      | Play |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |      |      |      |                    |      |      | Prev | Next |      |      |
  * |------+------+------+------+------+------'                    `------+------+------+------+------+------|
@@ -109,8 +110,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                      ,-------------.  ,-------------.
  *                                      |      |      |  |      |      |
  *                               ,------|------|------|  |------+------+------.
- *                               |      |      |      |  |      |      |Brwser|
- *                               |      |      |------|  |------|      |Back  |
+ *                               |      |      |      |  |      | Lclk | Rclk |
+ *                               |      |      |------|  |------|      |      |
  *                               |      |      |      |  |      |      |      |
  *                               `--------------------'  `--------------------'
  *
@@ -128,13 +129,55 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // right hand
                 KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
                 KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
-                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_MPLY,
+                KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  KC_TRNS,  KC_MPLY,
                 KC_TRNS,  KC_TRNS,  KC_MPRV,  KC_MNXT,  KC_TRNS,  KC_TRNS,
                           KC_VOLU,  KC_VOLD,  KC_MUTE,  KC_TRNS,  KC_TRNS,
       KC_TRNS,  KC_TRNS,
       KC_TRNS,
-      KC_TRNS,  KC_TRNS,  KC_WBAK
+      KC_TRNS,  KC_BTN1,  KC_BTN2
 ),
+/* Keymap 2: Media and mouse keys
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |Left  |Down  |Up    |Right |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------'                    `------+------+------+------+------+------|
+ * |      |      |      |      |      |                                  |      |      |      |      |      |
+ * `----------------------------------'                                  `----------------------------------'
+ *                                      ,-------------.  ,-------------.
+ *                                      |      |      |  |      |      |
+ *                               ,------|------|------|  |------+------+------.
+ *                               |      |      |      |  |      |      |      |
+ *                               |      |      |------|  |------|      |      |
+ *                               |      |      |      |  |      |      |      |
+ *                               `--------------------'  `--------------------'
+ *
+ */
+// MEDIA AND MOUSE
+[VIM] = LAYOUT_dactyl(
+       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+                                                         KC_TRNS,  KC_TRNS,
+                                                                   KC_TRNS,
+                                               KC_TRNS,  KC_TRNS,  KC_TRNS,
+    // right hand
+                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+                KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  KC_TRNS,  KC_TRNS,
+                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+                          KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+      KC_TRNS,  KC_TRNS,
+      KC_TRNS,
+      KC_TRNS,  KC_TRNS,  KC_TRNS
+),
+
 };
 
 const uint16_t PROGMEM fn_actions[] = {
