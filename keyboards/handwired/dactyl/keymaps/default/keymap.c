@@ -9,6 +9,8 @@
 enum custom_keycodes {
   PLACEHOLDER = SAFE_RANGE, // ensure these codes start after the highest keycode defined in Quantum
   VRSN,
+  XMON_RUN,
+  COPA,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -23,7 +25,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |LShift|Z/Ctrl|   X  |   C  |   V  |   B  |                    |   N  |   M  |   ,  |   .  |//Ctrl|RShift|
  * |------+------+------+------+------+------'                    `------+------+------+------+------+------|
- * |Grv/L1|  '"  |AltShf| Left | Right|                                  |  Up  | Down |   [  |   ]  | LGui |
+ * |Grv/L1|  '"  |AltShf| LGUI | COPA |                                  |  Up  | Down |   [  |   ]  | LGui |
  * `----------------------------------'                                  `----------------------------------'
  *                                      ,-------------.  ,-------------.
  *                                      | App  | LGui |  | Alt  | ^/Esc|
@@ -39,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           KC_DELT,         KC_Q,           KC_W,     KC_E,     KC_R,  KC_T,
           KC_BSPC,         KC_A,           KC_S,     KC_D,     KC_F,  KC_G,
           KC_LSFT,  CTL_T(KC_Z),           KC_X,     KC_C,     KC_V,  KC_B,
-  LT(SYMB,KC_GRV),      KC_QUOT,  LALT(KC_LSFT),  KC_LEFT,  KC_RGHT,
+  LT(SYMB,KC_GRV),      KC_QUOT,  LALT(KC_LSFT),  KC_LGUI,  COPA,
                                                                       ALT_T(KC_APP),  KC_LGUI,
                                                                                       KC_HOME,
                                                              KC_SPC,        KC_BSPC,   KC_END,
@@ -48,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              KC_Y,   KC_U,     KC_I,     KC_O,               KC_P,           KC_BSLS,
                              KC_H,   KC_J,     KC_K,     KC_L,   LT(VIM, KC_SCLN), LT(MDIA, KC_QUOT),
                              KC_N,   KC_M,  KC_COMM,   KC_DOT,     CTL_T(KC_SLSH),           KC_RSFT,
-                                    KC_UP,  KC_DOWN,  KC_LBRC,            KC_RBRC,           KC_LGUI,
+                                    KC_UP,  KC_DOWN,  KC_LBRC,            KC_RBRC,           MT(MOD_LGUI, XMON_RUN),
           KC_RALT,  CTL_T(KC_ESC),
           KC_PGUP,
           KC_PGDN, KC_TAB, KC_ENT
@@ -207,6 +209,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case VRSN:
       if (record->event.pressed) {
         SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
+      }
+      return false;
+      break;
+    case XMON_RUN:
+      if (record->event.pressed) {
+          SEND_STRING( SS_LGUI(SS_LSFT("p")));
+      }
+      return false;
+      break;
+    case COPA:
+      if (record->event.pressed) {
+          SEND_STRING(SS_LCTRL("c"));
+      } else {
+          SEND_STRING(SS_LCTRL("v"));
       }
       return false;
       break;
