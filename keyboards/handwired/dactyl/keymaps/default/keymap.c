@@ -13,6 +13,8 @@ enum custom_keycodes {
   COPA,
   ENDWRD,
   BGNWRD,
+  QEMU_USB_ADD,
+  QEMU_USB_DEL,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -101,7 +103,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* Keymap 2: Media and mouse keys
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      | Acl0 | Acl1 | Acl2 |      |      |                    |      |      |      |      |      |      |
+ * |      | Acl0 | Acl1 | Acl2 |      |      |                    |USBADD|      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      | MsUp |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -131,7 +133,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                    KC_TRNS,
                                                KC_TRNS,  KC_TRNS,  KC_TRNS,
     // right hand
-                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+                QEMU_USB_ADD,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
                 KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
                 KC_MS_L,  KC_MS_D,  KC_MS_U,  KC_MS_R,  KC_TRNS,  KC_MPLY,
                 KC_TRNS,  KC_TRNS,  KC_MPRV,  KC_MNXT,  KC_TRNS,  KC_TRNS,
@@ -237,6 +239,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case BGNWRD:
       if (record->event.pressed) {
           SEND_STRING(SS_LCTRL(SS_TAP(X_LEFT)));
+      }
+      return false;
+      break;
+    case QEMU_USB_ADD:
+      if (record->event.pressed) {
+        SEND_STRING("device_add usb-host,vendorid=0x1050,productid=0x0403,id=yubi");
+      }
+      return false;
+      break;
+    case QEMU_USB_DEL:
+      if (record->event.pressed) {
+        SEND_STRING("");
       }
       return false;
       break;
