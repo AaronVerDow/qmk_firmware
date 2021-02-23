@@ -17,12 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "config_common.h"
+
 #define VENDOR_ID       0xFEED
 #define PRODUCT_ID      0x6512
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    QMK
 #define PRODUCT         XT keyboard converter
-#define DESCRIPTION     convert XT keyboard to USB
 
 
 /* matrix size */
@@ -31,8 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* key combination for command */
 #define IS_COMMAND() ( \
-    keyboard_report->mods == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT)) || \
-    keyboard_report->mods == (MOD_BIT(KC_LCTRL) | MOD_BIT(KC_RSHIFT)) \
+    get_mods() == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT)) || \
+    get_mods() == (MOD_BIT(KC_LCTRL) | MOD_BIT(KC_RSHIFT)) \
 )
 
 

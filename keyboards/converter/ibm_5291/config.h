@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DEVICE_VER          1
 #define MANUFACTURER        QMK
 #define PRODUCT             5291 keyboard converter
-#define DESCRIPTION         5291 keyboard converter
 
 #define MATRIX_ROWS         24
 #define MATRIX_COLS         4
@@ -37,6 +36,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
-#define DEBOUNCING_DELAY    0
-
-
+#define DEBOUNCE    0
