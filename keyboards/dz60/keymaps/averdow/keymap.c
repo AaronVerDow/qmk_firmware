@@ -1,5 +1,14 @@
 #include QMK_KEYBOARD_H
 
+
+// https://gist.github.com/MaxWinterstein/c99594a5f4f8da942feb72c8233445aa/
+// Backlight timeout feature
+#define BACKLIGHT_TIMEOUT 10    // in minutes
+static uint16_t idle_timer = 0;
+static uint8_t halfmin_counter = 0;
+static uint8_t old_backlight_level = -1;
+static bool led_on = true;
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	LAYOUT_60_ansi(
@@ -33,13 +42,13 @@ const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {6, 4, HSV_RED},       // Light 4 LEDs, starting with LED 6
     {12, 4, HSV_RED}       // Light 4 LEDs, starting with LED 12
 );
-// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+
 const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {9, 2, HSV_CYAN}
+    {0, 16, HSV_CYAN}
 );
-// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
+
 const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {11, 2, HSV_PURPLE}
+    {0, 16, HSV_PURPLE}
 );
 // Light LEDs 13 & 14 in green when keyboard layer 3 is active
 const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS(
@@ -71,7 +80,42 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(1, layer_state_cmp(state, 1));
     rgblight_set_layer_state(2, layer_state_cmp(state, 2));
     rgblight_set_layer_state(3, layer_state_cmp(state, 3));
     return state;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        #ifdef BACKLIGHT_ENABLE
+            if (led_on == false || old_backlight_level == -1) {
+                if (old_backlight_level == -1) old_backlight_level = get_backlight_level();
+                backlight_set(old_backlight_level);
+                led_on = true;
+            }
+        #endif
+        idle_timer = timer_read();
+        halfmin_counter = 0;
+    }
+    return true;
+}
+
+void matrix_scan_user(void) {
+    // idle_timer needs to be set one time
+    if (idle_timer == 0) idle_timer = timer_read();
+
+    #ifdef BACKLIGHT_ENABLE
+        if ( led_on && timer_elapsed(idle_timer) > 30000) {
+            halfmin_counter++;
+            idle_timer = timer_read();
+        }
+
+        if ( led_on && halfmin_counter >= BACKLIGHT_TIMEOUT * 2) {
+            old_backlight_level = get_backlight_level();
+            backlight_set(0);
+            led_on = false;
+            halfmin_counter = 0;
+        }
+    #endif
 }
