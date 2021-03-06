@@ -111,6 +111,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         halfmin_counter = 0;
     }
 
+    // Create arrow keys on right side of keyboard
+    // https://www.reddit.com/r/olkb/comments/5y19qb/multikey_combo_for_layer_swap_qmk_help/
+
     if (keycode == KC_RSFT || keycode == KC_UP) {
         if (record->event.pressed)
             arrow_swap_state |= 0b00000001;
@@ -135,10 +138,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         else
             arrow_swap_state &= ~(0b00001000);
     }
-
-
-    if (arrow_swap_state == 0b00001111) { layer_invert(3); }
-
+    if (arrow_swap_state == 0b00001111) {
+        layer_invert(3);
+    }
 
     return true;
 }
