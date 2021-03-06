@@ -35,6 +35,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT,  KC_TRNS, KC_TRNS, KC_TRNS,
 		KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  KC_TRNS,          KC_TRNS,
 		KC_TRNS, KC_TRNS,          KC_TRNS,                   KC_TRNS,                            KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS),
+
+    // arrows
+
+	LAYOUT_60_ansi(
+		KC_TRNS,  KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,   KC_TRNS,  KC_TRNS,  KC_TRNS,           KC_TRNS,
+		KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+		KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,
+		KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  KC_TRNS,          KC_UP,
+		KC_TRNS, KC_TRNS,          KC_TRNS,                   KC_TRNS,                            KC_TRNS, KC_LEFT,          KC_DOWN, KC_RIGHT),
+
 };
 
 // Light LEDs 6 to 9 and 12 to 15 red when caps lock is active. Hard to ignore!
@@ -52,7 +62,7 @@ const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 );
 // Light LEDs 13 & 14 in green when keyboard layer 3 is active
 const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {13, 2, HSV_GREEN}
+    {0, 16, HSV_BLUE}
 );
 // etc..
 
@@ -86,6 +96,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
+static uint8_t arrow_swap_state = 0;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         #ifdef BACKLIGHT_ENABLE
@@ -98,6 +110,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         idle_timer = timer_read();
         halfmin_counter = 0;
     }
+
+    if (keycode == KC_RSFT || keycode == KC_UP) {
+        if (record->event.pressed)
+            arrow_swap_state |= 0b00000001;
+        else
+            arrow_swap_state &= ~(0b00000001);
+    }
+    if (keycode == KC_RCTL || keycode == KC_RIGHT) {
+        if (record->event.pressed)
+            arrow_swap_state |= 0b00000010;
+        else
+            arrow_swap_state &= ~(0b00000010);
+    }
+    if (keycode == KC_RGUI || keycode == KC_LEFT) {
+        if (record->event.pressed)
+            arrow_swap_state |= 0b00000100;
+        else
+            arrow_swap_state &= ~(0b00000100);
+    }
+    if (keycode == MO(1) || keycode == KC_DOWN) {
+        if (record->event.pressed)
+            arrow_swap_state |= 0b00001000;
+        else
+            arrow_swap_state &= ~(0b00001000);
+    }
+
+
+    if (arrow_swap_state == 0b00001111) { layer_invert(3); }
+
+
     return true;
 }
 
