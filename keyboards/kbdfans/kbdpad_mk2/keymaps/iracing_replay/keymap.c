@@ -64,11 +64,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_A,           // left
     KC_S,           // down
     KC_D,           // right
-    LCTL(KC_F12),   // camera tool
+    KC_NO,          // ran out of things to assign
 
 	KC_LCTL,        // ctrl 
     KC_LALT,        // alt
-    RALT(KC_ENTER), // fullscreen
+    LCTL(KC_F12),   // camera tool
     LT(MOD_LAYER, KC_SPACE)        // UI
   ),
 
@@ -84,8 +84,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	LCTL(KC_P4),    // prev session
     KC_P1,          // end
 
-	_______,
+	KC_RBRC,
+    KC_EQL,
     _______,
+    _______,
+
+	KC_LBRC,
+    KC_MINS,
     _______,
     _______,
 
@@ -95,13 +100,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,
 
 	_______,
-    _______,
-    _______,
-    _______,
-
-	_______,
-    _______,
     LALT(KC_M),  // cycle aim
+    RALT(KC_ENTER), // fullscreen.  Doesn't work reliably
     _______
   ),
 };
