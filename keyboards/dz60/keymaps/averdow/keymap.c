@@ -160,6 +160,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     // CAT layer
+    // I'd like to find a less hacky solution than using KC_F2x keys
+
     if (keycode == KC_GESC || keycode == KC_F21) {
         if (record->event.pressed)
             cat_swap_state |= 0b00000001;

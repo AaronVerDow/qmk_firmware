@@ -15,6 +15,18 @@
  */
 #include QMK_KEYBOARD_H
 
+void tap_key(uint16_t keycode) {
+  register_code  (keycode);
+  unregister_code(keycode);
+}
+
+void shift_key(uint16_t keycode) {
+  register_code  (KC_LSFT);
+  tap_key        (keycode);
+  unregister_code(KC_LSFT);
+}
+
+
 // Layer declarations
 enum {
     DEF_LAYER,
@@ -25,28 +37,71 @@ enum {
 enum {
     TD_CAR,
     TD_PRINT,
+    TD_CAM_UP,
+    TD_CAM_DN
 };
+
+enum custom_keycodes {
+    CHASE = 0,
+    REVERSE
+};
+
+void cam_up(qk_tap_dance_state_t *state, void *user_data) {
+    switch (state->count) {
+        case 1:
+            tap_key(KC_C);           // next cam
+            break;
+        case 2:
+            shift_key(KC_8);
+            shift_key(KC_8);
+            tap_key(KC_2);
+            tap_key(KC_2);
+            tap_key(KC_ENTER);
+            break;
+    }
+}
+
+void cam_down(qk_tap_dance_state_t *state, void *user_data) {
+    switch (state->count) {
+        case 1:
+            shift_key(KC_C);           // next cam
+            break;
+        case 2:
+            shift_key(KC_8);
+            shift_key(KC_8);
+            tap_key(KC_2);
+            tap_key(KC_0);
+            tap_key(KC_ENTER);
+            break;
+    }
+}
 
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
-    [TD_CAR] = ACTION_TAP_DANCE_DOUBLE( LSFT(KC_V), LCTL(KC_V)),
+    [TD_CAR] = ACTION_TAP_DANCE_DOUBLE(
+        LSFT(KC_V),
+        LCTL(KC_V)
+    ),
     [TD_PRINT] = ACTION_TAP_DANCE_DOUBLE(
         LCTL(LALT(LSFT(KC_S))),
         LGUI(KC_PSCR)  // print screen
     ),
-};
 
+    [TD_CAM_UP] = ACTION_TAP_DANCE_FN(cam_up),
+
+    [TD_CAM_DN] = ACTION_TAP_DANCE_FN(cam_down)
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [DEF_LAYER] = LAYOUT_ortho_6x4( /* Base */
 
-    KC_C,           // next cam
+    TD(TD_CAM_UP),  // next cam, double tap for reverse chase cam
     KC_V,           // next car
     LSFT(KC_P3),    // next lap
     LCTL(KC_P3),    // next inc
 
-    LSFT(KC_C),     // prev cam
+    TD(TD_CAM_DN),     // prev cam, double tap for chase cam
     TD(TD_CAR),     // prev car, double tap for my car
 	LSFT(KC_P1),    // prev lap
     LCTL(KC_P1),    // prev inc
@@ -107,6 +162,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch(keycode) {
+        // these are not used currently, leaving them in case someone wants to bind them to a key instead of tap dance
+        case CHASE:
+            if (record->event.pressed) {
+               SEND_STRING("**20" SS_TAP(X_ENTER));
+            }
+            break;
+        case REVERSE:
+            if (record->event.pressed) {
+               SEND_STRING("**22" SS_TAP(X_ENTER));
+            }
+            break;
+  }
+
   return true;
 }
 
