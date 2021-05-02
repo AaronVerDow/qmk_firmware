@@ -27,7 +27,8 @@ enum {
     TD_CAR,
     TD_PRINT,
     TD_CAM_UP,
-    TD_CAM_DN
+    TD_CAM_DN,
+    TD_MOVE_UI
 };
 
 void camera_number(uint16_t tens, uint16_t ones) {
@@ -73,6 +74,18 @@ void cam_down(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void move_ui(qk_tap_dance_state_t *state, void *user_data) {
+    switch (state->count) {
+        case 1:                     
+            tap_code16(LALT(KC_K));     // tap once to move iRacing UI elements
+            break;
+        case 2:                     
+            tap_code(KC_TAB);           // tap twice to move Racelab Overlays
+            tap_code(KC_TAB);           
+            break;
+    }
+}
+
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_CAR] = ACTION_TAP_DANCE_DOUBLE(
@@ -84,7 +97,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
         LGUI(KC_PSCR)               // tap twice for Windows print screen and save to file
     ),
     [TD_CAM_UP] = ACTION_TAP_DANCE_FN(cam_up),
-    [TD_CAM_DN] = ACTION_TAP_DANCE_FN(cam_down)
+    [TD_CAM_DN] = ACTION_TAP_DANCE_FN(cam_down),
+    [TD_MOVE_UI] = ACTION_TAP_DANCE_FN(move_ui)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -113,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_A,           // left
     KC_S,           // down
     KC_D,           // right
-    LALT(KC_K),     // toggle click and drag ui elements (in car)
+    TD(TD_MOVE_UI), // move UI elements (in car or Racelab)
 
     KC_LCTL,        // ctrl 
     KC_LALT,        // alt
